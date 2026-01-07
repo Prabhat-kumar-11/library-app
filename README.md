@@ -109,11 +109,12 @@ src/
 ### Technology Stack
 
 - **Frontend**: React 19 + TypeScript
-- **Build Tool**: Vite
-- **Testing**: Vitest + React Testing Library
-- **Styling**: CSS Modules
-- **Auth**: OAuth 2.0 (Google, GitHub)
+- **Build Tool**: Vite 7
+- **Testing**: Vitest 4
+- **Styling**: Modern CSS3 (responsive design)
+- **Auth**: Mock OAuth 2.0 (Google, GitHub)
 - **State**: React Context API
+- **Persistence**: LocalStorage
 
 ## 🚀 Getting Started
 
@@ -134,6 +135,8 @@ npm install
 npm run dev
 ```
 
+The app will be available at `http://localhost:5173`
+
 ### Testing
 
 ```bash
@@ -147,11 +150,44 @@ npm run test:ui
 npm run test:coverage
 ```
 
+**Current Test Results:**
+
+- ✅ 37 tests passing
+- ✅ Book model: 11 tests
+- ✅ User model: 11 tests
+- ✅ Library model: 15 tests
+
 ### Build
 
 ```bash
 npm run build
 ```
+
+## 🎮 Using the Application
+
+### Login
+
+1. Open the app at `http://localhost:5173`
+2. Enter any email address
+3. Choose user type:
+   - **Regular User**: Uncheck "Login as Admin"
+   - **Admin User**: Check "Login as Admin"
+4. Click "Sign in with Google" or "Sign in with GitHub"
+
+### As a Regular User
+
+1. **Browse Books**: View all available books with stock information
+2. **Borrow Books**: Click "Borrow" on any available book (max 2 books total)
+3. **View Borrowed Books**: See your borrowed books at the top of the page
+4. **Return Books**: Click "Return" on any borrowed book
+
+### As an Admin
+
+All user features plus:
+
+1. **Add New Books**: Fill out the form to add books to the library
+2. **Update Stock**: Modify the number of available copies
+3. **View Inventory**: See complete inventory with borrowing statistics
 
 ## 📝 User Stories Implementation
 
@@ -159,17 +195,44 @@ npm run build
 
 Users can view all available books in the library, with empty state handling.
 
+**Implementation:**
+
+- BookList component displays all books with stock information
+- Empty state message when no books available
+- Real-time stock updates
+
 ### Story 2: Borrow Books ✅
 
 Users can borrow books with a 2-book limit enforced.
+
+**Implementation:**
+
+- User.canBorrow() validates 2-book limit
+- Library.borrowBook() enforces business rules
+- Clear error messages when limit exceeded
+- Disabled borrow button when limit reached
 
 ### Story 3: Borrow Book Copies ✅
 
 Multiple copies are handled correctly, with 1 copy per book per user limit.
 
+**Implementation:**
+
+- User.hasBorrowedBook() checks for duplicate borrows
+- Book.availableCopies tracks remaining stock
+- Visual stock indicators (green for available, red for low stock)
+- Prevents borrowing same book twice
+
 ### Story 4: Return Books ✅
 
 Users can return books, updating both borrowed list and library stock.
+
+**Implementation:**
+
+- BorrowedBooks component shows user's borrowed books
+- Library.returnBook() updates stock and user's list
+- Real-time UI updates via LibraryContext
+- LocalStorage persistence of all changes
 
 ## 🔐 Security Considerations
 
