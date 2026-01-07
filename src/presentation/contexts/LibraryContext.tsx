@@ -3,10 +3,10 @@ import React, {
   useContext,
   useState,
   useEffect,
-  ReactNode,
+  type ReactNode,
 } from "react";
-import { Book, BookProps } from "../../domain/models/Book";
-import { User } from "../../domain/models/User";
+import { Book, type BookProps } from "../../domain/models/Book";
+import { User, UserRole } from "../../domain/models/User";
 import { MockApiService } from "../../infrastructure/api/MockApiService";
 import { AuthService } from "../../infrastructure/auth/AuthService";
 
@@ -204,7 +204,7 @@ export const LibraryProvider: React.FC<{ children: ReactNode }> = ({
   const login = async (email: string, isAdmin: boolean = false) => {
     try {
       setError(null);
-      const role = isAdmin ? ("ADMIN" as const) : ("USER" as const);
+      const role = isAdmin ? UserRole.ADMIN : UserRole.USER;
       const user = await AuthService.mockLogin(email, role);
       setCurrentUser(user);
     } catch (err) {

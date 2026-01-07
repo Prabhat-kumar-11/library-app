@@ -2,10 +2,12 @@ import { User, UserRole } from '../../domain/models/User';
 import { LocalStorageService } from '../storage/LocalStorage';
 import { MockApiService } from '../api/MockApiService';
 
-export enum AuthProvider {
-  GOOGLE = 'GOOGLE',
-  GITHUB = 'GITHUB',
-}
+export const AuthProvider = {
+  GOOGLE: 'GOOGLE',
+  GITHUB: 'GITHUB',
+} as const;
+
+export type AuthProvider = typeof AuthProvider[keyof typeof AuthProvider];
 
 export interface AuthToken {
   token: string;

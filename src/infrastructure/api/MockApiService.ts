@@ -1,5 +1,5 @@
-import { Book, BookProps } from '../../domain/models/Book';
-import { User, UserRole } from '../../domain/models/User';
+import { Book, type BookProps } from '../../domain/models/Book';
+import { User } from '../../domain/models/User';
 import { Library } from '../../domain/models/Library';
 import { LocalStorageService } from '../storage/LocalStorage';
 
