@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { useLibrary } from "../contexts/LibraryContext";
-import "./AdminPanel.css";
 
 export const AdminPanel: React.FC = () => {
   const { addBook, updateBookStock, books } = useLibrary();
