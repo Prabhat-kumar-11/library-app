@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Book } from '../../domain/models/Book';
 import { useLibrary } from '../contexts/LibraryContext';
 
@@ -7,11 +7,20 @@ interface BookListProps {
   showBorrowButton?: boolean;
 }
 
-export const BookList: React.FC<BookListProps> = ({ books, showBorrowButton = true }) => {
+export const BookListComponent: React.FC<BookListProps> = ({
+  books,
+  showBorrowButton = true,
+}) => {
   const { currentUser, borrowBook, error } = useLibrary();
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleBorrow = async (isbn: string) => {
-    await borrowBook(isbn);
+    setIsLoading(true);
+    try {
+      await borrowBook(isbn);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const canUserBorrowBook = (book: Book): boolean => {
@@ -34,7 +43,7 @@ export const BookList: React.FC<BookListProps> = ({ books, showBorrowButton = tr
 
   if (books.length === 0) {
     return (
-      <div className="text-center py-12">
+      <div className="flex flex-col items-center justify-center py-12 text-center">
         <div className="text-6xl mb-4">📚</div>
         <h2 className="text-2xl font-bold text-gray-900 mb-2">No Books Available</h2>
         <p className="text-gray-600">The library is currently empty. Check back later!</p>
@@ -56,6 +65,7 @@ export const BookList: React.FC<BookListProps> = ({ books, showBorrowButton = tr
             key={book.isbn}
             className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow border border-gray-200"
           >
+            {/* Header */}
             <div className="p-4 bg-gradient-to-r from-blue-500 to-blue-600">
               <div className="flex justify-between items-start gap-3">
                 <h3 className="text-lg font-semibold text-white flex-1">
@@ -69,13 +79,15 @@ export const BookList: React.FC<BookListProps> = ({ books, showBorrowButton = tr
                   }`}
                 >
                   {book.availableCopies === 0
-                    ? '0'
-                    : book.availableCopies}{' '}
-                  {book.availableCopies === 1 ? 'copy' : 'copies'}
+                    ? '0 Available'
+                    : `${book.availableCopies} ${
+                        book.availableCopies === 1 ? 'copy' : 'copies'
+                      }`}
                 </div>
               </div>
             </div>
 
+            {/* Content */}
             <div className="p-4">
               <p className="text-gray-600 text-sm mb-3">
                 <span className="font-medium">by</span> {book.author}
@@ -106,9 +118,9 @@ export const BookList: React.FC<BookListProps> = ({ books, showBorrowButton = tr
                       : 'bg-gray-100 text-gray-400 cursor-not-allowed'
                   }`}
                   onClick={() => handleBorrow(book.isbn)}
-                  disabled={!canUserBorrowBook(book)}
+                  disabled={!canUserBorrowBook(book) || isLoading}
                 >
-                  {getButtonText(book)}
+                  {isLoading ? 'Loading...' : getButtonText(book)}
                 </button>
               )}
             </div>
@@ -118,4 +130,3 @@ export const BookList: React.FC<BookListProps> = ({ books, showBorrowButton = tr
     </div>
   );
 };
-
