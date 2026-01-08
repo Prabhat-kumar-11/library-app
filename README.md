@@ -2,6 +2,30 @@
 
 A modern library management application built with React, TypeScript, and Vite, following TDD principles and clean code practices.
 
+## 🖼️ Screenshots
+
+The following screenshots show the app UI (sidebar, available books, inventory modal, and borrowed books view). Place the provided screenshot files in `public/screenshots/` with the filenames below so the images render on GitHub.
+
+Recommended filenames (already present in the repo):
+
+- `public/screenshots/available-books.png`
+- `public/screenshots/inventory-modal.png`
+- `public/screenshots/my-borrowed-books.png`
+
+### Preview
+
+<div align="center">
+
+![Available Books](public/screenshots/available-books.png)
+
+![Inventory Modal](public/screenshots/inventory-modal.png)
+
+![My Borrowed Books](public/screenshots/my-borrowed-books.png)
+
+</div>
+
+If you want different filenames or locations, update the paths above accordingly.
+
 ## 🏗️ Architecture & Design Decisions
 
 ### Core Principles
