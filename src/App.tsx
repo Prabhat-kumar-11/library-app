@@ -16,9 +16,21 @@ type PageType = 'available' | 'borrowed' | 'inventory' | 'tracking';
 const LibraryApp: React.FC = () => {
   const { currentUser, loading, error } = useLibrary();
   const [currentPage, setCurrentPage] = useState<PageType>('available');
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  // Handle browser navigation
+  // Handle navigation
+  const navigateTo = (page: PageType) => {
+    const pathMap: Record<PageType, string> = {
+      available: '/',
+      borrowed: '/borrowed',
+      inventory: '/inventory',
+      tracking: '/tracking',
+    };
+    window.history.pushState(null, '', pathMap[page]);
+    setCurrentPage(page);
+  };
+
+  // Handle browser back/forward
   useEffect(() => {
     const handlePopState = () => {
       const path = window.location.pathname;
@@ -30,6 +42,15 @@ const LibraryApp: React.FC = () => {
 
     window.addEventListener('popstate', handlePopState);
     return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
+
+  // Initialize from current URL
+  useEffect(() => {
+    const path = window.location.pathname;
+    if (path === '/') setCurrentPage('available');
+    else if (path === '/borrowed') setCurrentPage('borrowed');
+    else if (path === '/inventory') setCurrentPage('inventory');
+    else if (path === '/tracking') setCurrentPage('tracking');
   }, []);
 
   if (!currentUser) {
@@ -63,7 +84,11 @@ const LibraryApp: React.FC = () => {
           <div className="p-6">
             <SidebarNav
               isAdmin={currentUser.isAdmin()}
-              onNavigate={() => setSidebarOpen(false)}
+              currentPage={currentPage}
+              onNavigate={(page) => {
+                navigateTo(page);
+                setSidebarOpen(false);
+              }}
             />
           </div>
         </aside>

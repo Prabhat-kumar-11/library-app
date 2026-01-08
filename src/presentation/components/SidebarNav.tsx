@@ -1,30 +1,32 @@
 import React from 'react';
-import { useLocation } from 'react-router-dom';
 
 interface NavLink {
   label: string;
-  path: string;
+  page: 'available' | 'borrowed' | 'inventory' | 'tracking';
   icon: string;
   adminOnly?: boolean;
 }
 
 interface SidebarNavProps {
   isAdmin: boolean;
-  onNavigate?: () => void;
+  currentPage: string;
+  onNavigate: (page: 'available' | 'borrowed' | 'inventory' | 'tracking') => void;
 }
 
-export const SidebarNav: React.FC<SidebarNavProps> = ({ isAdmin, onNavigate }) => {
-  const location = useLocation();
-
+export const SidebarNav: React.FC<SidebarNavProps> = ({
+  isAdmin,
+  currentPage,
+  onNavigate,
+}) => {
   const navLinks: NavLink[] = [
     {
       label: 'Available Books',
-      path: '/',
+      page: 'available',
       icon: '📚',
     },
     {
       label: 'My Books',
-      path: '/borrowed',
+      page: 'borrowed',
       icon: '📖',
     },
   ];
@@ -33,13 +35,13 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({ isAdmin, onNavigate }) =
     navLinks.push(
       {
         label: 'Inventory',
-        path: '/inventory',
+        page: 'inventory',
         icon: '📦',
         adminOnly: true,
       },
       {
         label: 'Borrowing Tracking',
-        path: '/tracking',
+        page: 'tracking',
         icon: '👥',
         adminOnly: true,
       }
@@ -49,18 +51,12 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({ isAdmin, onNavigate }) =
   return (
     <nav className="space-y-2">
       {navLinks.map((link) => {
-        const isActive = location.pathname === link.path;
+        const isActive = currentPage === link.page;
         return (
-          <a
-            key={link.path}
-            href={link.path}
-            onClick={(e) => {
-              e.preventDefault();
-              window.history.pushState(null, '', link.path);
-              window.dispatchEvent(new PopStateEvent('popstate'));
-              onNavigate?.();
-            }}
-            className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
+          <button
+            key={link.page}
+            onClick={() => onNavigate(link.page)}
+            className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors text-left ${
               isActive
                 ? 'bg-blue-600 text-white font-medium'
                 : 'text-gray-700 hover:bg-gray-100'
@@ -68,7 +64,7 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({ isAdmin, onNavigate }) =
           >
             <span className="text-xl">{link.icon}</span>
             <span>{link.label}</span>
-          </a>
+          </button>
         );
       })}
     </nav>
